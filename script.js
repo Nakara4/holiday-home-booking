@@ -75,3 +75,27 @@ function searchHomes() {
 // Load properties on page load
 window.onload = displayProperties;
 
+// Function to handle form submission
+document.addEventListener("DOMContentLoaded", function () {
+    const bookingForm = document.getElementById("bookingForm");
+
+    if (bookingForm) {
+        bookingForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const checkIn = document.getElementById("check-in").value;
+            const checkOut = document.getElementById("check-out").value;
+
+            if (name && email && checkIn && checkOut) {
+                document.getElementById("confirmationMessage").innerText = `Thank you, ${name}! Your booking has been confirmed from ${checkIn} to ${checkOut}.`;
+                document.getElementById("confirmationMessage").classList.remove("hidden");
+
+                // Optionally, clear the form after submission
+                bookingForm.reset();
+            }
+        });
+    }
+});
+

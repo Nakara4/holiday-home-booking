@@ -15,6 +15,27 @@
         <div id="property-details" class="property-details">
             <!-- Property details will be loaded here dynamically -->
         </div>
+       
+         <!-- Booking Form -->
+         <div class="booking-form">
+            <h2>Book This Home</h2>
+            <form id="bookingForm">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+
+                <label for="check-in">Check-in Date:</label>
+                <input type="date" id="check-in" required>
+
+                <label for="check-out">Check-out Date:</label>
+                <input type="date" id="check-out" required>
+
+                <button type="submit">Confirm Booking</button>
+            </form>
+            <p id="confirmationMessage" class="hidden"></p>
+        </div>
     </main>
     <script src="script.js"></script>
 </body>
