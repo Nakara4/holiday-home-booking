@@ -8,11 +8,21 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to Holiday Home Booking</h1>
+        <h1>Find Your Perfect Holiday Home</h1>
+        <div class="search-bar">
+            <input type="text" id="location" placeholder="Enter a destination">
+            <input type="date" id="check-in">
+            <input type="date" id="check-out">
+            <button onclick="searchHomes()">Search</button>
+        </div>
     </header>
     <main>
-        <p>Find the best holiday homes for your vacation.</p>
+        <h2>Available Holiday Homes</h2>
+        <div id="property-list" class="property-list">
+            <!-- Properties will be loaded here dynamically -->
+        </div>
     </main>
+    
     <script src="script.js"></script>
 </body>
 </html>
