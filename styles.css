@@ -144,3 +144,42 @@ button:hover {
     margin-top: 15px;
 }
 
+.booking-list {
+    max-width: 600px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.booking-list h2 {
+    text-align: center;
+}
+
+.booking-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.booking-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.view-bookings-btn {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.view-bookings-btn:hover {
+    background-color: #218838;
+}
+

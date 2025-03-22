@@ -99,3 +99,37 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// Function to handle form submission and store booking details
+document.addEventListener("DOMContentLoaded", function () {
+    const bookingForm = document.getElementById("bookingForm");
+
+    if (bookingForm) {
+        bookingForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const checkIn = document.getElementById("check-in").value;
+            const checkOut = document.getElementById("check-out").value;
+
+            if (name && email && checkIn && checkOut) {
+                const booking = { name, email, checkIn, checkOut };
+                let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+                bookings.push(booking);
+                localStorage.setItem("bookings", JSON.stringify(bookings));
+
+                document.getElementById("confirmationMessage").innerText = `Thank you, ${name}! Your booking is confirmed from ${checkIn} to ${checkOut}.`;
+                document.getElementById("confirmationMessage").classList.remove("hidden");
+
+                bookingForm.reset();
+            }
+        });
+    }
+});
+
+// Function to display stored bookings (for future implementation)
+function displayBookings() {
+    let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+    console.log("Saved Bookings:", bookings);
+}
+
