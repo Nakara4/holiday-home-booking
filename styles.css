@@ -1,113 +1,113 @@
-/* Modernized Styles for Holiday Home Booking Website */
-
-/* Global Styles */
+/* General Styles */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f8f9fa;
     color: #333;
+    animation: fadeIn 0.8s ease-in-out;
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-header {
-    background-color: #007bff;
-    color: white;
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 20px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-h1, h2 {
-    font-weight: 600;
+/* Dark Mode */
+.dark-mode {
+    background-color: #1e1e1e;
+    color: #f1f1f1;
 }
 
-/* Search Bar */
-.search-bar {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    padding: 15px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    width: 80%;
-    margin: 20px auto;
+.dark-mode header {
+    background: linear-gradient(to right, #343a40, #212529);
 }
 
-.search-bar input {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+.dark-mode .property-card {
+    background: #2c2c2c;
+    color: #f1f1f1;
+    box-shadow: 0px 6px 12px rgba(255, 255, 255, 0.1);
 }
 
-button {
-    padding: 10px 15px;
-    font-size: 16px;
-    background-color: #28a745;
+.dark-mode .booking-form {
+    background: #2c2c2c;
+    color: #f1f1f1;
+    box-shadow: 0 6px 12px rgba(255, 255, 255, 0.1);
+}
+
+/* Header */
+header {
+    background: linear-gradient(to right, #007bff, #0056b3);
     color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
+    text-align: center;
+    padding: 25px 0;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    animation: slideDown 0.5s ease-in-out;
 }
 
-button:hover {
-    background-color: #218838;
+@keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
-/* Property List */
+/* Property Listings */
 .property-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: auto;
+    margin-top: 30px;
 }
 
-.property {
+.property-card {
     background: white;
-    padding: 15px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding: 25px;
     text-align: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s;
+    animation: fadeInUp 0.6s ease-in-out;
 }
 
-.property img {
-    width: 100%;
-    border-radius: 8px;
+.property-card:hover {
+    transform: scale(1.06);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* Booking Form */
-.booking-form {
-    max-width: 400px;
-    margin: 20px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+@keyframes fadeInUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
-.booking-form input {
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
+/* Dark Mode Toggle Button */
+.toggle-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.toggle-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #333;
+    color: white;
+    border: none;
     border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-/* Booking List */
-.booking-list {
-    max-width: 600px;
-    margin: 20px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-.booking-list li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+.toggle-button:hover {
+    background: #555;
 }
