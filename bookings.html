@@ -14,26 +14,10 @@
     <main>
         <div id="booking-list" class="booking-list">
             <h2>Your Bookings</h2>
-            <ul id="bookingsContainer"></ul>
+            <ul id="bookingsContainer"></ul>  <!-- This is where bookings will appear -->
         </div>
     </main>
     <script src="script.js"></script>
-    <script>
-        // Function to display stored bookings
-        document.addEventListener("DOMContentLoaded", function () {
-            let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
-            const container = document.getElementById("bookingsContainer");
-
-            if (bookings.length === 0) {
-                container.innerHTML = "<p>No bookings yet.</p>";
-            } else {
-                bookings.forEach((booking, index) => {
-                    let li = document.createElement("li");
-                    li.innerHTML = `${index + 1}. <strong>${booking.name}</strong> booked from <strong>${booking.checkIn}</strong> to <strong>${booking.checkOut}</strong>`;
-                    container.appendChild(li);
-                });
-            }
-        });
-    </script>
 </body>
 </html>
+

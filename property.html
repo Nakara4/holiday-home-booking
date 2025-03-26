@@ -22,20 +22,14 @@
          <div class="booking-form">
             <h2>Book This Home</h2>
             <form id="bookingForm">
-                <label for="name">Your Name:</label>
-                <input type="text" id="name" required>
-
-                <label for="email">Email:</label>
-                <input type="email" id="email" required>
-
-                <label for="check-in">Check-in Date:</label>
-                <input type="date" id="check-in" required>
-
-                <label for="check-out">Check-out Date:</label>
-                <input type="date" id="check-out" required>
-
-                <button type="submit">Confirm Booking</button>
+                <input type="hidden" id="propertyId" value="PROPERTY_UNIQUE_ID"> <!-- Unique ID for property -->
+                <input type="text" id="name" placeholder="Your Name" required>
+                <input type="email" id="email" placeholder="Your Email" required> <!-- Email input added -->
+                <input type="date" id="checkIn" required>
+                <input type="date" id="checkOut" required>
+                <button type="submit">Book Now</button>
             </form>
+            
             <p id="confirmationMessage" class="hidden"></p>
         </div>
     </main>

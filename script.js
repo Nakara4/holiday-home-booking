@@ -76,60 +76,121 @@ function searchHomes() {
 window.onload = displayProperties;
 
 // Function to handle form submission
-document.addEventListener("DOMContentLoaded", function () {
-    const bookingForm = document.getElementById("bookingForm");
-
-    if (bookingForm) {
-        bookingForm.addEventListener("submit", function (event) {
-            event.preventDefault();
-
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
-            const checkIn = document.getElementById("check-in").value;
-            const checkOut = document.getElementById("check-out").value;
-
-            if (name && email && checkIn && checkOut) {
-                document.getElementById("confirmationMessage").innerText = `Thank you, ${name}! Your booking has been confirmed from ${checkIn} to ${checkOut}.`;
-                document.getElementById("confirmationMessage").classList.remove("hidden");
-
-                // Optionally, clear the form after submission
-                bookingForm.reset();
-            }
-        });
-    }
-});
 
 // Function to handle form submission and store booking details
 document.addEventListener("DOMContentLoaded", function () {
-    const bookingForm = document.getElementById("bookingForm");
-
+    let bookingForm = document.getElementById("bookingForm");
     if (bookingForm) {
         bookingForm.addEventListener("submit", function (event) {
-            event.preventDefault();
+            event.preventDefault(); 
+            
+            let propertyId = document.getElementById("propertyId").value;
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value; 
+            let checkIn = document.getElementById("checkIn").value;
+            let checkOut = document.getElementById("checkOut").value;
 
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
-            const checkIn = document.getElementById("check-in").value;
-            const checkOut = document.getElementById("check-out").value;
-
-            if (name && email && checkIn && checkOut) {
-                const booking = { name, email, checkIn, checkOut };
-                let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
-                bookings.push(booking);
-                localStorage.setItem("bookings", JSON.stringify(bookings));
-
-                document.getElementById("confirmationMessage").innerText = `Thank you, ${name}! Your booking is confirmed from ${checkIn} to ${checkOut}.`;
-                document.getElementById("confirmationMessage").classList.remove("hidden");
-
-                bookingForm.reset();
+            if (propertyId && name && email && checkIn && checkOut) {
+                saveBooking(propertyId, name, email, checkIn, checkOut);
+                window.location.href = "bookings.html"; 
+            } else {
+                alert("Please fill in all fields.");
             }
         });
     }
 });
 
-// Function to display stored bookings (for future implementation)
+
+// Ensure script runs only after the DOM is fully loaded
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("JavaScript loaded!");  // Debugging log
+
+    // Check if we are on the bookings.html page
+    if (document.getElementById("bookingsContainer")) {
+        console.log("Calling displayBookings()...");
+        displayBookings();  
+    }
+});
+
+// Function to save a booking
+function saveBooking(propertyId, name, email, checkIn, checkOut) {
+    let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
+    // Check if the property is already booked during the requested dates
+    let isBooked = bookings.some(booking => 
+        booking.propertyId === propertyId &&
+        ((checkIn >= booking.checkIn && checkIn <= booking.checkOut) || 
+         (checkOut >= booking.checkIn && checkOut <= booking.checkOut))
+    );
+
+    if (isBooked) {
+        alert("This property is already booked for the selected dates. Please choose different dates.");
+        return;
+    }
+
+    // If not booked, save the booking
+    let newBooking = { propertyId, name, email, checkIn, checkOut };
+    bookings.push(newBooking);
+    localStorage.setItem("bookings", JSON.stringify(bookings));
+
+    console.log("Booking saved:", newBooking);
+    alert("Booking confirmed!");
+}
+
+// Function to display bookings in bookings.html
 function displayBookings() {
     let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
-    console.log("Saved Bookings:", bookings);
+    let container = document.getElementById("bookingsContainer");
+
+    console.log("Bookings found:", bookings);  // Debugging log
+
+    if (!container) {
+        console.error("Error: bookingsContainer element NOT found in HTML!");
+        return;
+    }
+
+    if (bookings.length === 0) {
+        container.innerHTML = "<p>No bookings yet.</p>";
+        console.log("No bookings to display.");
+    } else {
+        container.innerHTML = "";
+        bookings.forEach((booking) => {
+            let li = document.createElement("li");
+            li.innerHTML = `<strong>${booking.name}</strong> booked from <strong>${booking.checkIn}</strong> to <strong>${booking.checkOut}</strong>`;
+            container.appendChild(li);
+        });
+
+        console.log("Bookings displayed successfully.");
+    }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("JavaScript loaded!");  // Debugging log
+
+    // Run displayBookings() only if we are on bookings.html
+    if (document.getElementById("bookingsContainer")) {
+        console.log("Calling displayBookings()...");
+        displayBookings();
+    }
+
+    // Attach event listener to the booking form if on property.html
+    let bookingForm = document.getElementById("bookingForm");
+    if (bookingForm) {
+        bookingForm.addEventListener("submit", function (event) {
+            event.preventDefault(); 
+            
+            let name = document.getElementById("name").value;
+            let checkIn = document.getElementById("checkIn").value;
+            let checkOut = document.getElementById("checkOut").value;
+
+            if (name && checkIn && checkOut) {
+                saveBooking(name, checkIn, checkOut);
+                alert("Booking saved successfully!");
+                window.location.href = "bookings.html"; 
+            } else {
+                alert("Please fill in all fields.");
+            }
+        });
+    }
+});
 
