@@ -241,3 +241,43 @@ function applyFilters() {
 
     displayProperties(filtered);
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    emailjs.init("YOUR_USER_ID"); // Replace with your EmailJS user ID
+});
+
+function sendConfirmationEmail(name, email, checkIn, checkOut) {
+    const templateParams = {
+        name: name,
+        email: email,
+        checkIn: checkIn,
+        checkOut: checkOut
+    };
+
+    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+        .then(function(response) {
+            console.log("Email sent successfully!", response);
+            alert("Booking confirmed! A confirmation email has been sent.");
+        }, function(error) {
+            console.error("Failed to send email", error);
+            alert("Booking confirmed, but email could not be sent.");
+        });
+}
+
+// Modify the existing booking form submission to include email sending
+document.getElementById("bookingForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    let name = document.getElementById("name").value;
+    let email = document.getElementById("email").value;
+    let checkIn = document.getElementById("checkIn").value;
+    let checkOut = document.getElementById("checkOut").value;
+
+    if (name && email && checkIn && checkOut) {
+        saveBooking(name, email, checkIn, checkOut);
+        sendConfirmationEmail(name, email, checkIn, checkOut);
+        window.location.href = "bookings.html";
+    } else {
+        alert("Please fill in all fields.");
+    }
+});
