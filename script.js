@@ -194,3 +194,50 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    displayProperties(); // Load properties on page load
+});
+
+function displayProperties(filteredProperties = null) {
+    const properties = [
+        { id: 1, name: "Luxury Villa", location: "New York", price: 500 },
+        { id: 2, name: "Beach House", location: "Miami", price: 350 },
+        { id: 3, name: "City Apartment", location: "Los Angeles", price: 200 }
+    ];
+
+    const container = document.getElementById("propertiesContainer");
+    container.innerHTML = ""; 
+
+    const propertiesToDisplay = filteredProperties || properties;
+
+    propertiesToDisplay.forEach(property => {
+        let card = document.createElement("div");
+        card.classList.add("property-card");
+        card.innerHTML = `
+            <h3>${property.name}</h3>
+            <p>Location: ${property.location}</p>
+            <p class="price">$${property.price} per night</p>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function applyFilters() {
+    const locationFilter = document.getElementById("locationFilter").value;
+    const minPrice = document.getElementById("minPrice").value;
+    const maxPrice = document.getElementById("maxPrice").value;
+
+    const properties = [
+        { id: 1, name: "Luxury Villa", location: "New York", price: 500 },
+        { id: 2, name: "Beach House", location: "Miami", price: 350 },
+        { id: 3, name: "City Apartment", location: "Los Angeles", price: 200 }
+    ];
+
+    const filtered = properties.filter(property => {
+        return (!locationFilter || property.location === locationFilter) &&
+               (!minPrice || property.price >= minPrice) &&
+               (!maxPrice || property.price <= maxPrice);
+    });
+
+    displayProperties(filtered);
+}

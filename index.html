@@ -18,6 +18,20 @@
         <div class="toggle-container">
     <button id="toggleDarkMode" class="toggle-button">Toggle Dark Mode</button>
 </div>
+<div class="filter-container">
+    <select id="locationFilter">
+        <option value="">All Locations</option>
+        <option value="New York">New York</option>
+        <option value="Los Angeles">Los Angeles</option>
+        <option value="Miami">Miami</option>
+    </select>
+
+    <input type="number" id="minPrice" placeholder="Min Price">
+    <input type="number" id="maxPrice" placeholder="Max Price">
+    
+    <button onclick="applyFilters()">Apply Filters</button>
+</div>
+
 
     </header>
     <main>
