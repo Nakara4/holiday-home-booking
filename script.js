@@ -194,33 +194,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+function applyFilters() {
+    const locationFilter = document.getElementById("locationFilter").value.toLowerCase();
+    const minPrice = parseInt(document.getElementById("minPrice").value) || 0;
+    const maxPrice = parseInt(document.getElementById("maxPrice").value) || Infinity;
+
+    const filteredProperties = properties.filter(property => {
+        const propertyPrice = parseInt(property.price.replace(/\D/g, '')); // Remove non-numeric chars from price
+        return (!locationFilter || property.location.toLowerCase().includes(locationFilter)) &&
+               (propertyPrice >= minPrice) &&
+               (propertyPrice <= maxPrice);
+    });
+
+    displayProperties(filteredProperties);
+}
 document.addEventListener("DOMContentLoaded", function () {
     displayProperties(); // Load properties on page load
+    document.getElementById("applyFilters").addEventListener("click", applyFilters);
 });
 
-function displayProperties(filteredProperties = null) {
-    const properties = [
-        { id: 1, name: "Luxury Villa", location: "New York", price: 500 },
-        { id: 2, name: "Beach House", location: "Miami", price: 350 },
-        { id: 3, name: "City Apartment", location: "Los Angeles", price: 200 }
-    ];
 
-    const container = document.getElementById("propertiesContainer");
-    container.innerHTML = ""; 
-
-    const propertiesToDisplay = filteredProperties || properties;
-
-    propertiesToDisplay.forEach(property => {
-        let card = document.createElement("div");
-        card.classList.add("property-card");
-        card.innerHTML = `
-            <h3>${property.name}</h3>
-            <p>Location: ${property.location}</p>
-            <p class="price">$${property.price} per night</p>
-        `;
-        container.appendChild(card);
-    });
-}
 
 function applyFilters() {
     const locationFilter = document.getElementById("locationFilter").value;
@@ -234,50 +227,37 @@ function applyFilters() {
     ];
 
     const filtered = properties.filter(property => {
-        return (!locationFilter || property.location === locationFilter) &&
-               (!minPrice || property.price >= minPrice) &&
-               (!maxPrice || property.price <= maxPrice);
+        return (!locationFilter || property.location.toLowerCase().includes(locationFilter.toLowerCase())) &&
+               (!minPrice || property.price >= parseInt(minPrice)) &&
+               (!maxPrice || property.price <= parseInt(maxPrice));
     });
 
+    console.log("Filtered Properties:", filtered);
     displayProperties(filtered);
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    emailjs.init("YOUR_USER_ID"); // Replace with your EmailJS user ID
-});
+function displayProperties(filteredProperties = null) {
+    const properties = [
+        { id: 1, name: "Luxury Villa", location: "New York", price: 500, image: "images/villa.jpg", link: "property.html?id=1" },
+        { id: 2, name: "Beach House", location: "Miami", price: 350, image: "images/beach-house.jpg", link: "property.html?id=2" },
+        { id: 3, name: "City Apartment", location: "Los Angeles", price: 200, image: "images/apartment.jpg", link: "property.html?id=3" }
+    ];
 
-function sendConfirmationEmail(name, email, checkIn, checkOut) {
-    const templateParams = {
-        name: name,
-        email: email,
-        checkIn: checkIn,
-        checkOut: checkOut
-    };
+    const container = document.getElementById("property-list"); // Ensure correct ID
+    container.innerHTML = ""; 
 
-    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
-        .then(function(response) {
-            console.log("Email sent successfully!", response);
-            alert("Booking confirmed! A confirmation email has been sent.");
-        }, function(error) {
-            console.error("Failed to send email", error);
-            alert("Booking confirmed, but email could not be sent.");
-        });
+    const propertiesToDisplay = filteredProperties?.length ? filteredProperties : properties;
+
+    propertiesToDisplay.forEach(property => {
+        let card = document.createElement("div");
+        card.classList.add("property-card");
+        card.innerHTML = `
+            <img src="${property.image}" alt="${property.name}" class="property-image">
+            <h3>${property.name}</h3>
+            <p>Location: ${property.location}</p>
+            <p class="price">$${property.price} per night</p>
+            <a href="${property.link}" class="view-more-btn">View More</a>
+        `;
+        container.appendChild(card);
+    });
 }
-
-// Modify the existing booking form submission to include email sending
-document.getElementById("bookingForm").addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    let name = document.getElementById("name").value;
-    let email = document.getElementById("email").value;
-    let checkIn = document.getElementById("checkIn").value;
-    let checkOut = document.getElementById("checkOut").value;
-
-    if (name && email && checkIn && checkOut) {
-        saveBooking(name, email, checkIn, checkOut);
-        sendConfirmationEmail(name, email, checkIn, checkOut);
-        window.location.href = "bookings.html";
-    } else {
-        alert("Please fill in all fields.");
-    }
-});
