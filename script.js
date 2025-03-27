@@ -1,36 +1,44 @@
-// Sample property data
 const properties = [
-    { id: 1, name: "Beachfront Villa", location: "Miami", price: "$200/night", image: "https://via.placeholder.com/300", description: "A beautiful villa with ocean views." },
-    { id: 2, name: "Mountain Cabin", location: "Denver", price: "$150/night", image: "https://via.placeholder.com/300", description: "Cozy cabin surrounded by nature." },
-    { id: 3, name: "City Apartment", location: "New York", price: "$180/night", image: "https://via.placeholder.com/300", description: "Modern apartment in the heart of the city." }
+    { id: 1, name: "Luxury Villa", location: "New York", price: 500, image: "https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", link: "property.html?id=1" },
+    { id: 2, name: "Beach House", location: "Miami", price: 350, image: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", link: "property.html?id=2" },
+    { id: 3, name: "City Apartment", location: "Los Angeles", price: 200, image: "https://images.unsplash.com/photo-1472835560847-37d024ebacdc?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", link: "property.html?id=3" }
 ];
 
-// Function to display properties on the home page
-function displayProperties() {
-    const propertyList = document.getElementById("property-list");
-    propertyList.innerHTML = "";
+// Function to format price consistently
+function formatPrice(price) {
+    return `$${price} per night`;
+}
 
-    properties.forEach(property => {
-        const propertyDiv = document.createElement("div");
-        propertyDiv.classList.add("property");
-        propertyDiv.innerHTML = `
-            <img src="${property.image}" alt="${property.name}" width="100%">
+// Function to display properties (used on index.html)
+function displayProperties(filteredProperties = null) {
+    const container = document.getElementById("property-list");
+    if (!container) return;
+
+    container.innerHTML = ""; 
+
+    const propertiesToDisplay = filteredProperties?.length ? filteredProperties : properties;
+
+    propertiesToDisplay.forEach(property => {
+        let card = document.createElement("div");
+        card.classList.add("property-card");
+        card.innerHTML = `
+            <img src="${property.image}" alt="${property.name}" class="property-image">
             <h3>${property.name}</h3>
-            <p>${property.location}</p>
-            <p><strong>${property.price}</strong></p>
-            <button onclick="viewProperty(${property.id})">View More</button>
+            <p>Location: ${property.location}</p>
+            <p class="price">${formatPrice(property.price)}</p>
+            <a href="${property.link}" class="view-more-btn" onclick="saveProperty(${property.id})">View More</a>
         `;
-        propertyList.appendChild(propertyDiv);
+        container.appendChild(card);
     });
 }
 
-// Function to redirect to property details page
-function viewProperty(propertyId) {
-    localStorage.setItem("selectedProperty", JSON.stringify(properties.find(p => p.id === propertyId)));
-    window.location.href = "property.html";
+// Function to save property details to localStorage before redirecting
+function saveProperty(id) {
+    const selectedProperty = properties.find(p => p.id === id);
+    localStorage.setItem("selectedProperty", JSON.stringify(selectedProperty));
 }
 
-// Function to display property details on `property.html`
+// Function to display property details on property.html
 function displayPropertyDetails() {
     const property = JSON.parse(localStorage.getItem("selectedProperty"));
     if (!property) {
@@ -42,38 +50,41 @@ function displayPropertyDetails() {
         <img src="${property.image}" alt="${property.name}">
         <h2>${property.name}</h2>
         <p>${property.location}</p>
-        <p><strong>${property.price}</strong></p>
-        <p>${property.description}</p>
+        <p class="price">${formatPrice(property.price)}</p>
+        <p>${property.description || "No additional details available."}</p>
         <button class="book-now">Book Now</button>
     `;
 }
 
-// Load the property details only if on `property.html`
-if (window.location.pathname.includes("property.html")) {
-    displayPropertyDetails();
+// Function to apply property filters
+function applyFilters() {
+    const locationFilter = document.getElementById("locationFilter").value;
+    const minPrice = parseInt(document.getElementById("minPrice").value) || 0;
+    const maxPrice = parseInt(document.getElementById("maxPrice").value) || Infinity;
+
+    const filtered = properties.filter(property => {
+        return (!locationFilter || property.location.toLowerCase().includes(locationFilter.toLowerCase())) &&
+               (property.price >= minPrice && property.price <= maxPrice);
+    });
+
+    displayProperties(filtered);
 }
 
-// Load properties on home page
-if (window.location.pathname.includes("index.html") || window.location.pathname === "/") {
-    window.onload = displayProperties;
-}
-
-
-// Function to filter properties based on search input
-function searchHomes() {
-    const locationInput = document.getElementById("location").value.toLowerCase();
-    const filteredProperties = properties.filter(property => property.location.toLowerCase().includes(locationInput));
-    
-    if (filteredProperties.length > 0) {
-        properties.length = 0;
-        properties.push(...filteredProperties);
+// Ensure the correct function runs based on the current page
+document.addEventListener("DOMContentLoaded", function () {
+    if (document.getElementById("property-list")) {
+        displayProperties();
     }
-    
-    displayProperties();
-}
+    if (document.getElementById("property-details")) {
+        displayPropertyDetails();
+    }
 
-// Load properties on page load
-window.onload = displayProperties;
+    // Attach event listener for filter button
+    const filterBtn = document.getElementById("applyFilters");
+    if (filterBtn) {
+        filterBtn.addEventListener("click", applyFilters);
+    }
+});
 
 // Function to handle form submission
 
@@ -194,70 +205,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-function applyFilters() {
-    const locationFilter = document.getElementById("locationFilter").value.toLowerCase();
-    const minPrice = parseInt(document.getElementById("minPrice").value) || 0;
-    const maxPrice = parseInt(document.getElementById("maxPrice").value) || Infinity;
-
-    const filteredProperties = properties.filter(property => {
-        const propertyPrice = parseInt(property.price.replace(/\D/g, '')); // Remove non-numeric chars from price
-        return (!locationFilter || property.location.toLowerCase().includes(locationFilter)) &&
-               (propertyPrice >= minPrice) &&
-               (propertyPrice <= maxPrice);
-    });
-
-    displayProperties(filteredProperties);
-}
-document.addEventListener("DOMContentLoaded", function () {
-    displayProperties(); // Load properties on page load
-    document.getElementById("applyFilters").addEventListener("click", applyFilters);
-});
-
-
-
-function applyFilters() {
-    const locationFilter = document.getElementById("locationFilter").value;
-    const minPrice = document.getElementById("minPrice").value;
-    const maxPrice = document.getElementById("maxPrice").value;
-
-    const properties = [
-        { id: 1, name: "Luxury Villa", location: "New York", price: 500 },
-        { id: 2, name: "Beach House", location: "Miami", price: 350 },
-        { id: 3, name: "City Apartment", location: "Los Angeles", price: 200 }
-    ];
-
-    const filtered = properties.filter(property => {
-        return (!locationFilter || property.location.toLowerCase().includes(locationFilter.toLowerCase())) &&
-               (!minPrice || property.price >= parseInt(minPrice)) &&
-               (!maxPrice || property.price <= parseInt(maxPrice));
-    });
-
-    console.log("Filtered Properties:", filtered);
-    displayProperties(filtered);
-}
-
-function displayProperties(filteredProperties = null) {
-    const properties = [
-        { id: 1, name: "Luxury Villa", location: "New York", price: 500, image: "images/villa.jpg", link: "property.html?id=1" },
-        { id: 2, name: "Beach House", location: "Miami", price: 350, image: "images/beach-house.jpg", link: "property.html?id=2" },
-        { id: 3, name: "City Apartment", location: "Los Angeles", price: 200, image: "images/apartment.jpg", link: "property.html?id=3" }
-    ];
-
-    const container = document.getElementById("property-list"); // Ensure correct ID
-    container.innerHTML = ""; 
-
-    const propertiesToDisplay = filteredProperties?.length ? filteredProperties : properties;
-
-    propertiesToDisplay.forEach(property => {
-        let card = document.createElement("div");
-        card.classList.add("property-card");
-        card.innerHTML = `
-            <img src="${property.image}" alt="${property.name}" class="property-image">
-            <h3>${property.name}</h3>
-            <p>Location: ${property.location}</p>
-            <p class="price">$${property.price} per night</p>
-            <a href="${property.link}" class="view-more-btn">View More</a>
-        `;
-        container.appendChild(card);
-    });
-}
