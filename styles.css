@@ -347,3 +347,68 @@ header {
     background: linear-gradient(45deg, #2c3e50, #34495e) !important;
     animation: none !important; /* Disables gradient animation in dark mode */
 }
+
+/* Stripe Card Element Styles */
+.stripe-card-element {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 10px 0;
+    background: white;
+}
+
+#card-errors {
+    color: #fa755a;
+    margin-bottom: 10px;
+    min-height: 20px;
+}
+
+/* Payment loading state */
+#submit-btn.processing {
+    position: relative;
+    pointer-events: none;
+}
+
+#submit-btn.processing::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Payment Section Styles */
+#payment-section {
+    margin: 15px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.stripe-card-element {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#card-errors {
+    color: #dc3545;
+    margin: 10px 0;
+    min-height: 20px;
+}
+
+#total-amount {
+    font-weight: bold;
+    color: #28a745;
+}

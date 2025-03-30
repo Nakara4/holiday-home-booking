@@ -28,6 +28,46 @@ const properties = [
     }
 ];
 
+// Stripe initialization (only loads on pages with payment form)
+let stripe, elements;
+
+function initStripe() {
+    if (!document.getElementById('card-element')) return;
+    
+    stripe = Stripe('pk_test_your_test_key');
+    elements = stripe.elements();
+    
+    const card = elements.create('card', {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#32325d',
+                '::placeholder': { color: '#aab7c4' }
+            },
+            invalid: { color: '#fa755a' }
+        }
+    });
+    card.mount('#card-element');
+    
+    // Update price when dates change
+    document.getElementById('checkIn')?.addEventListener('change', updateBookingTotal);
+    document.getElementById('checkOut')?.addEventListener('change', updateBookingTotal);
+}
+
+function updateBookingTotal() {
+    const property = JSON.parse(localStorage.getItem("selectedProperty"));
+    if (!property) return;
+    
+    const checkIn = document.getElementById('checkIn')?.value;
+    const checkOut = document.getElementById('checkOut')?.value;
+    
+    if (checkIn && checkOut) {
+        const nights = (new Date(checkOut) - new Date(checkIn)) / (86400000);
+        const total = nights * property.price;
+        document.getElementById('total-amount').textContent = total.toFixed(2);
+    }
+}
+
 // Function to format price consistently
 function formatPrice(price) {
     return `$${price} per night`;
@@ -112,81 +152,120 @@ document.addEventListener("DOMContentLoaded", function () {
     if (filterBtn) {
         filterBtn.addEventListener("click", applyFilters);
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Initialize Stripe only on pages that need it
+        initStripe();
+        
+        // Your existing page detection logic
+        if (document.getElementById("property-list")) {
+            displayProperties();
+        }
+        if (document.getElementById("property-details")) {
+            displayPropertyDetails();
+            updateBookingTotal(); // Initialize price display
+        }
+        if (document.getElementById("bookings-list")) {
+            displayBookings();
+        }
+        
+        // Your existing form/button listeners
+        const bookingForm = document.getElementById("bookingForm");
+        if (bookingForm) bookingForm.addEventListener("submit", handleBookingSubmission);
+    }); 
+
 });
 
 // Function to handle booking submission
-function handleBookingSubmission(event) {
+async function handleBookingSubmission(event) {
     event.preventDefault();
-
-    // Get form values
+    
+    // Keep all your existing validation checks
     const propertyId = document.getElementById("propertyId").value;
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
     const checkIn = document.getElementById("checkIn").value;
     const checkOut = document.getElementById("checkOut").value;
-
-    // Basic field validation
+    
+    // Your existing validation
     if (!name || !email || !checkIn || !checkOut) {
         alert("Please fill in all fields.");
         return;
     }
-
-    // Convert dates to comparable formats
-    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD
-    const checkInDate = new Date(checkIn);
-    const checkOutDate = new Date(checkOut);
-
-    // Date validation checks
+    
+    // Your existing date validation
+    const today = new Date().toISOString().split('T')[0];
     if (checkIn < today) {
         alert("Check-in date cannot be in the past.");
         return;
     }
-
     if (checkOut <= checkIn) {
         alert("Check-out date must be after check-in date.");
         return;
     }
-
-    // Check for overlapping bookings (existing code)
+    
+    // Check for conflicts (your existing code)
     const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+    const property = properties.find(p => p.id == propertyId);
     const isConflicting = bookings.some(b => 
         b.propertyId === propertyId && 
         ((checkIn >= b.checkIn && checkIn <= b.checkOut) || 
          (checkOut >= b.checkIn && checkOut <= b.checkOut))
     );
-
+    
     if (isConflicting) {
         alert("This property is already booked for the selected dates.");
         return;
     }
-
-    // Proceed with booking if all validations pass
-    const property = properties.find(p => p.id == propertyId);
-    const booking = {
-        id: new Date().getTime(),
-        propertyId: propertyId,
-        propertyName: property.name,
-        name: name,
-        email: email,
-        checkIn: checkIn,
-        checkOut: checkOut
-    };
-
-    bookings.push(booking);
-    localStorage.setItem("bookings", JSON.stringify(bookings));
-
-    // Show confirmation
-    document.getElementById("confirmationMessage").textContent = 
-        `Booking confirmed for ${property.name}! Dates: ${checkIn} to ${checkOut}`;
-    document.getElementById("confirmationMessage").style.display = "block";
     
-    // Optional: Clear form after 3 seconds
-    setTimeout(() => {
-        document.getElementById("bookingForm").reset();
-        document.getElementById("confirmationMessage").style.display = "none";
-    }, 3000);
+    // ===== NEW PAYMENT PROCESSING =====
+    try {
+        // For school project simulation (no real payment)
+        const confirmPayment = confirm(`Proceed with payment of $${calculateTotal(checkIn, checkOut, property.price)}? (This is a simulation)`);
+        
+        if (!confirmPayment) {
+            alert("Booking cancelled");
+            return;
+        }
+        
+        // Create booking record
+        const booking = {
+            id: new Date().getTime(),
+            propertyId: propertyId,
+            propertyName: property.name,
+            name: name,
+            email: email,
+            checkIn: checkIn,
+            checkOut: checkOut,
+            paymentId: 'simulated_payment_' + Math.random().toString(36).substr(2, 9),
+            amount: calculateTotal(checkIn, checkOut, property.price)
+        };
+        
+        bookings.push(booking);
+        localStorage.setItem("bookings", JSON.stringify(bookings));
+        
+        // Show confirmation
+        document.getElementById("confirmationMessage").textContent = 
+            `Booking confirmed for ${property.name}!`;
+        document.getElementById("confirmationMessage").style.display = "block";
+        
+        // Clear form after delay
+        setTimeout(() => {
+            document.getElementById("bookingForm").reset();
+            document.getElementById("confirmationMessage").style.display = "none";
+        }, 3000);
+        
+    } catch (error) {
+        console.error("Payment error:", error);
+        alert("Payment failed. Please try again.");
+    }
 }
 
+// Helper function
+function calculateTotal(checkIn, checkOut, price) {
+    const nights = (new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24);
+    return nights * price;
+}
 // Attach event listener to booking form
 document.addEventListener("DOMContentLoaded", function () {
     const bookingForm = document.getElementById("bookingForm");

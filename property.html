@@ -23,17 +23,27 @@
          <div class="booking-form">
             <h2>Book This Home</h2>
             <form id="bookingForm">
-                <input type="hidden" id="propertyId" value="PROPERTY_UNIQUE_ID"> <!-- Unique ID for property -->
+                <input type="hidden" id="propertyId">
                 <input type="text" id="name" placeholder="Your Name" required>
-                <input type="email" id="email" placeholder="Your Email" required> <!-- Email input added -->
+                <input type="email" id="email" placeholder="Your Email" required>
                 <input type="date" id="checkIn" required>
                 <input type="date" id="checkOut" required>
-                <button type="submit">Book Now</button>
+                
+                <!-- Payment section -->
+                <div id="payment-section">
+                    <div id="card-element" class="stripe-card-element"></div>
+                    <div id="card-errors" role="alert"></div>
+                </div>
+                
+                <button type="submit" id="submit-btn">Book Now ($<span id="total-amount">0</span>)</button>
             </form>
             
             <p id="confirmationMessage" class="hidden"></p>
         </div>
     </main>
+
+    <script src="https://js.stripe.com/v3/"></script>
     <script src="script.js"></script>
+
 </body>
 </html>
