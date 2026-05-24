@@ -3,67 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Browse curated holiday homes, filter by location and price, and book your next getaway.">
     <title>Holiday Home Booking</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <h1>Find Your Perfect Holiday Home</h1>
-       
-        <div class="toggle-container">
-            <button id="toggleDarkMode" class="toggle-button">
-                <i class="fas fa-moon"></i> Dark Mode
-            </button>
-</div>
-<div class="filter-container">
-    <select id="locationFilter">
-        <option value="">All Locations</option>
-        <option value="New York">New York</option>
-        <option value="Los Angeles">Los Angeles</option>
-        <option value="Miami">Miami</option>
-    </select>
-
-    <input type="number" id="minPrice" placeholder="Min Price">
-    <input type="number" id="maxPrice" placeholder="Max Price">
-    
-    <button onclick="applyFilters()">Apply Filters</button>
-</div>
-
-
-    </header>
-    <main>
-        <h2>Available Holiday Homes</h2>
-        <div id="property-list" class="property-list">
-            <!-- Properties will be loaded here dynamically -->
+    <header class="site-header">
+        <div class="hero-copy">
+            <p class="eyebrow">Holiday Home Booking</p>
+            <h1>Find your perfect holiday home</h1>
+            <p class="hero-subtitle">Explore beautifully curated stays, filter by destination and budget, and book your next getaway in minutes.</p>
+            <div class="hero-actions">
+                <a href="#property-list" class="primary-btn">Explore homes</a>
+                <a href="bookings.html" class="secondary-btn">My bookings</a>
+            </div>
         </div>
-        
-    </main>
-    ><script>
-        const toggleButton = document.getElementById("toggleDarkMode");
-    
-        // Load user preference and set initial button text
-        if (localStorage.getItem("darkMode") === "true") {
-            document.body.classList.add("dark-mode");
-            toggleButton.textContent = "Light Mode";
-        } else {
-            toggleButton.textContent = "Dark Mode";
-        }
-    
-        // Toggle function
-        toggleButton.addEventListener("click", function() {
-            document.body.classList.toggle("dark-mode");
-            const isDark = document.body.classList.contains("dark-mode");
-            localStorage.setItem("darkMode", isDark);
-            toggleButton.textContent = isDark ? "Light Mode" : "Dark Mode"; // Update button text
 
-            toggleButton.innerHTML = isDark 
-    ? '<i class="fas fa-sun"></i> Light Mode' 
-    : '<i class="fas fa-moon"></i> Dark Mode';
-        });
-    </script>
-    
-    
+        <div class="header-panel">
+            <div class="toggle-container">
+                <button id="toggleDarkMode" class="toggle-button" type="button" aria-pressed="false">
+                    <i class="fas fa-moon" aria-hidden="true"></i>
+                    <span>Dark Mode</span>
+                </button>
+            </div>
+            <p class="hero-stat">Curated stays · Flexible filters · Easy booking</p>
+        </div>
+    </header>
+
+    <main>
+        <section class="filters-section" aria-labelledby="filters-heading">
+            <div class="section-heading">
+                <h2 id="filters-heading">Refine your search</h2>
+                <p>Use the filters below to narrow your options quickly.</p>
+            </div>
+
+            <form id="filterForm" class="filter-form">
+                <label for="searchQuery">
+                    Search
+                    <input type="search" id="searchQuery" name="searchQuery" placeholder="Search by name or location">
+                </label>
+
+                <label for="locationFilter">
+                    Location
+                    <select id="locationFilter" name="locationFilter">
+                        <option value="">All locations</option>
+                        <option value="New York">New York</option>
+                        <option value="Los Angeles">Los Angeles</option>
+                        <option value="Miami">Miami</option>
+                    </select>
+                </label>
+
+                <label for="sortBy">
+                    Sort by
+                    <select id="sortBy" name="sortBy">
+                        <option value="featured">Featured</option>
+                        <option value="price-asc">Price: low to high</option>
+                        <option value="price-desc">Price: high to low</option>
+                        <option value="name-asc">Name: A to Z</option>
+                        <option value="name-desc">Name: Z to A</option>
+                    </select>
+                </label>
+
+                <label for="minPrice">
+                    Min price
+                    <input type="number" id="minPrice" name="minPrice" placeholder="0" min="0">
+                </label>
+
+                <label for="maxPrice">
+                    Max price
+                    <input type="number" id="maxPrice" name="maxPrice" placeholder="1000" min="0">
+                </label>
+
+                <button class="primary-btn" type="submit">Apply filters</button>
+            </form>
+
+            <p id="filterStatus" class="filter-status" aria-live="polite"></p>
+        </section>
+
+        <section class="properties-section">
+            <div class="section-heading">
+                <h2>Available holiday homes</h2>
+                <p id="resultsSummary">Showing all available homes.</p>
+            </div>
+
+            <div id="property-list" class="property-list" aria-live="polite">
+                <!-- Properties will be loaded here dynamically -->
+            </div>
+
+            <p id="emptyState" class="empty-state hidden">No properties match your current filters.</p>
+        </section>
+    </main>
+
     <script src="script.js"></script>
 </body>
 </html>

@@ -18,6 +18,28 @@
         <div id="property-details" class="property-details">   
             <!-- Property details will be loaded here dynamically -->
         </div>
+
+        <div id="bookingSummary" class="booking-summary-panel" aria-live="polite">
+            <div>
+                <p class="booking-summary-label">Booking summary</p>
+                <h2>Choose your dates</h2>
+                <p id="bookingSummaryText">Select your check-in and check-out dates to see the total cost.</p>
+            </div>
+            <div class="booking-summary-grid">
+                <div>
+                    <span class="summary-key">Nightly rate</span>
+                    <strong id="summaryNightlyRate">$0</strong>
+                </div>
+                <div>
+                    <span class="summary-key">Nights</span>
+                    <strong id="summaryNights">0</strong>
+                </div>
+                <div>
+                    <span class="summary-key">Total</span>
+                    <strong id="summaryTotal">$0</strong>
+                </div>
+            </div>
+        </div>
        
          <!-- Booking Form -->
          <div class="booking-form">
